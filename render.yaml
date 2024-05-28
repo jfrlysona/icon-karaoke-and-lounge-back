@@ -3,14 +3,12 @@ services:
     name: express-api
     env: node
     plan: free
-    buildCommand: 'npm install'
-    startCommand: 'npm start'
+    buildCommand: "npm install"
+    startCommand: "npm start"
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: "3000"
       - key: MONGODB_URI
-        fromDatabase: mongo
-databases:
-  - name: mongo
-    type: mongodb
-    plan: free
+        value: "mongodb+srv://sona:sona@sona.fz2qfno.mongodb.net/menu"
