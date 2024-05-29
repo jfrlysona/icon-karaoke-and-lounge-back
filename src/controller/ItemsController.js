@@ -1,12 +1,15 @@
-import { CategoriesModel } from "../model/CategoriesModel.js";
 import { ItemsModel } from "../model/ItemsModel.js";
+import { CategoriesModel } from "../model/CategoriesModel.js";
+const getBaseUrl = () => {
+  return process.env.API_BASE_URL || "http://localhost:3000";
+};
 
 export const getAllItems = async (req, res) => {
   try {
     const AllItems = await ItemsModel.find({});
     res.status(200).json(AllItems);
   } catch (error) {
-    res.send("Categories are not found!");
+    res.status(500).json({ message: "Categories are not found!" });
   }
 };
 
@@ -24,7 +27,7 @@ export const getItemById = async (req, res) => {
   }
 };
 
-export const createItem = async (req, res, next) => {
+export const createItem = async (req, res) => {
   try {
     const { name, price, categoryId, ingredients } = req.body;
 
@@ -36,8 +39,7 @@ export const createItem = async (req, res, next) => {
     };
 
     if (req.uploadFileName) {
-      newItemData.image =
-        "http://localhost:3000/api/images/" + req.uploadFileName;
+      newItemData.image = `${getBaseUrl()}/api/images/${req.uploadFileName}`;
     }
 
     const newItem = new ItemsModel(newItemData);
@@ -81,22 +83,35 @@ export const updateItem = async (req, res) => {
     };
 
     if (req.uploadFileName) {
-      updatedItemData.image = "http://localhost:3000/api/images/" + req.uploadFileName;
+      updatedItemData.image = `${getBaseUrl()}/api/images/${
+        req.uploadFileName
+      }`;
     }
 
-    const updatedItem = await ItemsModel.findByIdAndUpdate(id, updatedItemData, { new: true });
+    const updatedItem = await ItemsModel.findByIdAndUpdate(
+      id,
+      updatedItemData,
+      { new: true }
+    );
 
     if (existingItem.categoryId.toString() !== categoryId) {
-      await CategoriesModel.findByIdAndUpdate(existingItem.categoryId, { $pull: { items: existingItem._id } });
-      await CategoriesModel.findByIdAndUpdate(categoryId, { $push: { items: updatedItem._id } });
+      await CategoriesModel.findByIdAndUpdate(existingItem.categoryId, {
+        $pull: { items: existingItem._id },
+      });
+      await CategoriesModel.findByIdAndUpdate(categoryId, {
+        $push: { items: updatedItem._id },
+      });
     }
 
     res.json(updatedItem);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Item is not updated due to an internal server error" });
+    res
+      .status(500)
+      .json({ error: "Item is not updated due to an internal server error" });
   }
 };
+
 export const deleteItem = async (req, res) => {
   const { id } = req.params;
   try {

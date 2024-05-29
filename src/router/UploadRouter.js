@@ -18,5 +18,4 @@ UploadRouter.post("/upload", upload.single("file"), (req, res) => {
   }
 });
 
-
 export default UploadRouter;
