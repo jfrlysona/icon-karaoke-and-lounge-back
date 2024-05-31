@@ -4,10 +4,13 @@ const ordersSchema = new Schema({
   amount: { type: Number, required: true },
   status: { type: String, required: true, default: "pending" },
   cashback: { type: Number, default: 0, ref: "users" },
-  count: { type: Number, required: true },
   note: String,
-  itemsName: [{ type: String, ref: "items" }],
-  itemsPrice: [{ type: Number, ref: "items" }],
+  items: [
+    {
+      itemId: { type: Schema.Types.ObjectId, ref: "items" },
+      itemCount: { type: Number, required: true },
+    },
+  ],
   orderByUserId: { type: Schema.Types.ObjectId, ref: "users" },
 });
 

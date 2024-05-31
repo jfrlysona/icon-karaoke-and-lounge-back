@@ -1,9 +1,10 @@
+import jwt from "jsonwebtoken";
 import twilio from "twilio";
 import dotenv from "dotenv";
 import { UsersModel } from "../model/UserModel.js";
 dotenv.config();
 
-const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_SERVICE_SID } =
+const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_SERVICE_SID ,JWT_KEY } =
   process.env;
 
 const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, {
@@ -43,15 +44,34 @@ export const verifyOtp = async (req, res, next) => {
       });
 
     if (verifiedResponse.status === "approved") {
-      const user = await UsersModel.findOneAndUpdate(
+      let user = await UsersModel.findOneAndUpdate(
         { phoneNumber, countryCode },
         { fullname, gender, role },
         { new: true, upsert: true }
       );
 
+      if (!user) {
+        return res.status(404).json({ message: "User not found!" });
+      }
+
+      const token = jwt.sign(
+        {
+          userId: user._id,
+          phoneNumber: user.phoneNumber,
+          countryCode: user.countryCode,
+          fullname: user.fullname,
+          role: user.role,
+        },
+        JWT_KEY,
+        {
+          expiresIn: "1h",
+        }
+      );
+
       res.status(200).json({
         message: "OTP verified and user information updated successfully!",
         userId: user._id,
+        token: token,
       });
     } else {
       res.status(400).json({
