@@ -1,132 +1,93 @@
+import { ItemsModel } from "../model/ItemsModel.js";
 import { OrdersModel } from "../model/OrderModel.js";
 import { UsersModel } from "../model/UserModel.js";
 
-export const getOrderById = async (req, res) => {
+export const getAllOrders = async (req, res) => {
   try {
-    const { id } = req.params;
-    const order = await OrdersModel.findById(id)
-      .populate("orderByUserId", "fullname phoneNumber countryCode")
-      .populate("items.itemId", "name price");
-
-    if (!order) {
-      return res.status(404).json("Order is not found!");
-    }
-    res.status(200).send(order);
+    const orders = await OrdersModel.find()
+      .populate({
+        path: "orderByUserId",
+        select: "fullname role gender phoneNumber countryCode",
+      })
+      .populate({
+        path: "items.itemId",
+        select: "name price",
+      });
+    res.status(200).json(orders);
   } catch (error) {
-    console.error("Error retrieving order by ID:", error);
-    res.status(500).json("Internal Server Error");
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getOrderById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const order = await OrdersModel.findById(id)
+      .populate({
+        path: "orderByUserId",
+        select: "fullname role gender phoneNumber countryCode",
+      })
+      .populate({
+        path: "items.itemId",
+        select: "name price",
+      });
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.status(200).json(order);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
 export const createOrder = async (req, res) => {
-  const { amount, status, cashback, note, items, orderByUserId } = req.body;
+  const { amount, items, orderByUserId, note } = req.body;
+
   try {
+    const user = await UsersModel.findById(orderByUserId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    for (let item of items) {
+      const foundItem = await ItemsModel.findById(item.itemId);
+      if (!foundItem) {
+        return res
+          .status(404)
+          .json({ message: `Item with ID ${item.itemId} not found` });
+      }
+    }
+
     const newOrder = new OrdersModel({
       amount,
-      status,
-      cashback,
-      note,
       items,
       orderByUserId,
+      note,
     });
-    await newOrder.save();
-    const user = await UsersModel.findByIdAndUpdate(
-      orderByUserId,
-      { $push: { orders: newOrder._id } },
-      { new: true }
-    );
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-    res.json({ newOrder, user });
+    const savedOrder = await newOrder.save();
+
+    user.orders.push(savedOrder._id);
+    await user.save();
+
+    res.status(201).json(savedOrder);
   } catch (error) {
-    console.error("Error creating order:", error);
-    res.status(400).json({
-      message: "Something went wrong!",
-      error: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
 };
 
 export const deleteOrder = async (req, res) => {
   const { id } = req.params;
   try {
+    const order = await OrdersModel.findById(id);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
     await OrdersModel.findByIdAndDelete(id);
-    res.status(200).json({
-      message: "Order deleted successfully!",
-    });
     await UsersModel.updateOne({ orders: id }, { $pull: { orders: id } });
+    res.status(200).json({ message: "Order deleted successfully" });
   } catch (error) {
-    console.error("Error deleting order:", error);
-    res.status(400).json({
-      message: "Something went wrong!",
-      error: error.message,
-    });
-  }
-};
-
-// export const getAllOrders = async (req, res) => {
-//   try {
-//     const orders = await OrdersModel.aggregate([
-//       {
-//         $lookup: {
-//           from: "users",
-//           localField: "orderByUserId",
-//           foreignField: "_id",
-//           as: "user",
-//         },
-//       },
-//       {
-//         $unwind: "$user",
-//       },
-//       {
-//         $lookup: {
-//           from: "items",
-//           localField: "items.itemId",
-//           foreignField: "_id",
-//           as: "itemsDetails",
-//         },
-//       },
-     
-//       {
-//         $project: {
-//           amount: 1,
-//           status: 1,
-//           cashback: 1,
-//           note: 1,
-//           items: {
-//             itemId: "$itemsDetails._id",
-//             itemCount: 1,
-//             itemName: "$itemsDetails.name",
-//             itemPrice: "$itemsDetails.price",
-//           },
-//           user: {
-//             _id: "$user._id",
-//             fullname: "$user.fullname",
-//             phoneNumber: "$user.phoneNumber",
-//             countryCode: "$user.countryCode",
-//           },
-//         },
-//       },
-//     ]);
-
-//     res.status(200).json(orders);
-//   } catch (error) {
-//     console.error("Error retrieving orders:", error);
-//     res.status(400).json({
-//       message: "Something went wrong!",
-//       error: error.message,
-//     });
-//   }
-// };
-
-
-export const getAllOrders = async (req, res) => {
-  try {
-    const AllOrders = await OrdersModel.find({});
-    res.status(200).json(AllOrders);
-  } catch (error) {
-    res.status(500).json({ message: "Categories are not found!" });
+    res.status(500).json({ message: error.message });
   }
 };

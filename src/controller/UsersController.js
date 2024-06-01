@@ -65,43 +65,23 @@ export const getUser = async (req, res) => {
   const { phoneNumber, countryCode } = req.params;
 
   try {
-    const userWithOrders = await UsersModel.aggregate([
-      { $match: { phoneNumber, countryCode } },
-      {
-        $lookup: {
-          from: "orders",
-          localField: "orders",
-          foreignField: "_id",
-          as: "orders",
-        },
-      },
-      {
-        $project: {
-          phoneNumber: 1,
-          countryCode: 1,
-          fullname: 1,
-          gender: 1,
-          role: 1,
-          orders: {
-            _id: 1,
-            amount: 1,
-            status: 1,
-            cashback: 1,
-            count: 1,
-            note: 1,
-            itemsName: 1,
-            itemsPrice: 1,
-          },
-        },
-      },
-    ]);
+    const userWithOrders = await UsersModel.findOne({ phoneNumber, countryCode })
+      .populate({
+        path: 'orders',
+        select: 'amount note status',
+        populate: {
+          path: 'items.itemId',
+          select: 'name price',
+        }
+      });
 
-    if (userWithOrders.length === 0) {
+    if (!userWithOrders) {
       return res.status(404).json({
         message: "User not found!",
       });
     }
-    res.status(200).json(userWithOrders[0]);
+
+    res.status(200).json(userWithOrders);
   } catch (error) {
     console.error("Error retrieving user with orders:", error);
     res.status(400).json({
@@ -110,37 +90,18 @@ export const getUser = async (req, res) => {
     });
   }
 };
+
 export const getAllUsers = async (req, res) => {
   try {
-    const usersWithOrders = await UsersModel.aggregate([
-      {
-        $lookup: {
-          from: "orders",
-          localField: "orders",
-          foreignField: "_id",
-          as: "orders",
-        },
-      },
-      {
-        $project: {
-          phoneNumber: 1,
-          countryCode: 1,
-          fullname: 1,
-          gender: 1,
-          role: 1,
-          orders: {
-            _id: 1,
-            amount: 1,
-            status: 1,
-            cashback: 1,
-            count: 1,
-            note: 1,
-            itemsName: 1,
-            itemsPrice: 1,
-          },
-        },
-      },
-    ]);
+    const usersWithOrders = await UsersModel.find({})
+      .populate({
+        path: 'orders',
+        select: 'amount note status',
+        populate: {
+          path: 'items.itemId',
+          select: 'name price',
+        }
+      });
 
     res.status(200).json(usersWithOrders);
   } catch (error) {

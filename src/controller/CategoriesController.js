@@ -61,31 +61,13 @@ export const deleteCategory = async (req, res) => {
     res.status(500).json({ message: "Error deleting category" });
   }
 };
+
 export const getCategoriesWithItems = async (req, res) => {
   try {
-    const categoriesWithItems = await CategoriesModel.aggregate([
-      {
-        $lookup: {
-          from: "items", 
-          localField: "items",
-          foreignField: "_id",
-          as: "items"
-        }
-      },
-      {
-        $project: {
-          name: 1,
-          items: {
-            name: 1,
-            price: 1,
-            image: 1,
-            ingredients: 1,
-            _id: 1
-          }
-        }
-      }
-    ]);
-
+    const categoriesWithItems = await CategoriesModel.find().populate({
+      path: "items",
+      select: "name price image ingredients",
+    });
     res.status(200).json(categoriesWithItems);
   } catch (error) {
     console.error("Error fetching categories with items:", error);

@@ -129,31 +129,10 @@ export const deleteItem = async (req, res) => {
 
 export const getItemsWithCategory = async (req, res) => {
   try {
-    const itemsWithCategory = await ItemsModel.aggregate([
-      {
-        $lookup: {
-          from: "categories",
-          localField: "categoryId",
-          foreignField: "_id",
-          as: "category",
-        },
-      },
-      {
-        $unwind: "$category",
-      },
-      {
-        $project: {
-          name: 1,
-          price: 1,
-          image: 1,
-          ingredients: 1,
-          category: {
-            name: "$category.name",
-            _id: "$category._id",
-          },
-        },
-      },
-    ]);
+    const itemsWithCategory = await ItemsModel.find().populate({
+      path: 'categoryId',
+      select: 'name',
+    });
 
     res.status(200).json(itemsWithCategory);
   } catch (error) {
