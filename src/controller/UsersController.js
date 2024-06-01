@@ -15,7 +15,7 @@ export const updateUserInfo = async (req, res) => {
     user.fullname = fullname || user.fullname;
     user.gender = gender || user.gender;
 
-    if (role && user.role === "admin") {
+    if (role && user.role === "Admin") {
       user.role = role;
     }
 
