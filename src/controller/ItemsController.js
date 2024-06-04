@@ -1,11 +1,11 @@
-import { ItemsModel } from "../model/ItemsModel.js";
-import { CategoriesModel } from "../model/CategoriesModel.js";
+const { ItemsModel } = require("../model/ItemsModel.js");
+const { CategoriesModel } = require("../model/CategoriesModel.js");
 
 const getBaseUrl = () => {
   return process.env.API_BASE_URL || "http://localhost:3000";
 };
 
-export const getAllItems = async (req, res) => {
+const getAllItems = async (req, res) => {
   try {
     const AllItems = await ItemsModel.find({});
     res.status(200).json(AllItems);
@@ -14,7 +14,7 @@ export const getAllItems = async (req, res) => {
   }
 };
 
-export const getItemById = async (req, res) => {
+const getItemById = async (req, res) => {
   try {
     const { id } = req.params;
     const item = await ItemsModel.findById(id);
@@ -28,7 +28,7 @@ export const getItemById = async (req, res) => {
   }
 };
 
-export const createItem = async (req, res) => {
+const createItem = async (req, res) => {
   try {
     const { name, price, categoryId, ingredients } = req.body;
 
@@ -66,7 +66,7 @@ export const createItem = async (req, res) => {
   }
 };
 
-export const updateItem = async (req, res) => {
+const updateItem = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, price, categoryId, ingredients } = req.body;
@@ -113,7 +113,7 @@ export const updateItem = async (req, res) => {
   }
 };
 
-export const deleteItem = async (req, res) => {
+const deleteItem = async (req, res) => {
   const { id } = req.params;
   try {
     const item = await ItemsModel.findByIdAndDelete(id);
@@ -127,11 +127,11 @@ export const deleteItem = async (req, res) => {
   }
 };
 
-export const getItemsWithCategory = async (req, res) => {
+const getItemsWithCategory = async (req, res) => {
   try {
     const itemsWithCategory = await ItemsModel.find().populate({
-      path: 'categoryId',
-      select: 'name',
+      path: "categoryId",
+      select: "name",
     });
 
     res.status(200).json(itemsWithCategory);
@@ -139,4 +139,13 @@ export const getItemsWithCategory = async (req, res) => {
     console.error("Error fetching items with category:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
+
+module.exports = {
+  createItem,
+  deleteItem,
+  getAllItems,
+  getItemById,
+  getItemsWithCategory,
+  updateItem,
 };

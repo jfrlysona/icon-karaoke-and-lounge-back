@@ -1,8 +1,8 @@
-import { ItemsModel } from "../model/ItemsModel.js";
-import { OrdersModel } from "../model/OrderModel.js";
-import { UsersModel } from "../model/UserModel.js";
+const { ItemsModel } = require("../model/ItemsModel.js");
+const { OrdersModel } = require("../model/OrderModel.js");
+const { UsersModel } = require("../model/UserModel.js");
 
-export const getAllOrders = async (req, res) => {
+const getAllOrders = async (req, res) => {
   try {
     const orders = await OrdersModel.find()
       .populate({
@@ -19,7 +19,7 @@ export const getAllOrders = async (req, res) => {
   }
 };
 
-export const getOrderById = async (req, res) => {
+const getOrderById = async (req, res) => {
   const { id } = req.params;
   try {
     const order = await OrdersModel.findById(id)
@@ -40,7 +40,7 @@ export const getOrderById = async (req, res) => {
   }
 };
 
-export const createOrder = async (req, res) => {
+const createOrder = async (req, res) => {
   const { amount, items, orderByUserId, note } = req.body;
 
   try {
@@ -76,7 +76,7 @@ export const createOrder = async (req, res) => {
   }
 };
 
-export const deleteOrder = async (req, res) => {
+const deleteOrder = async (req, res) => {
   const { id } = req.params;
   try {
     const order = await OrdersModel.findById(id);
@@ -90,4 +90,11 @@ export const deleteOrder = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+module.exports = {
+  createOrder,
+  deleteOrder,
+  getAllOrders,
+  getOrderById,
 };

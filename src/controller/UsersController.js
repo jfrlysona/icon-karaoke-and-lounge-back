@@ -1,6 +1,6 @@
-import { UsersModel } from "../model/UserModel.js";
+const { UsersModel } = require("../model/UserModel.js");
 
-export const updateUserInfo = async (req, res) => {
+const updateUserInfo = async (req, res) => {
   const { fullname, gender, role } = req.body;
   const { phoneNumber, countryCode } = req.params;
   try {
@@ -33,7 +33,7 @@ export const updateUserInfo = async (req, res) => {
     });
   }
 };
-export const deleteUser = async (req, res) => {
+const deleteUser = async (req, res) => {
   const { phoneNumber, countryCode } = req.params;
 
   try {
@@ -61,19 +61,21 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-export const getUser = async (req, res) => {
+const getUser = async (req, res) => {
   const { phoneNumber, countryCode } = req.params;
 
   try {
-    const userWithOrders = await UsersModel.findOne({ phoneNumber, countryCode })
-      .populate({
-        path: 'orders',
-        select: 'amount note status',
-        populate: {
-          path: 'items.itemId',
-          select: 'name price',
-        }
-      });
+    const userWithOrders = await UsersModel.findOne({
+      phoneNumber,
+      countryCode,
+    }).populate({
+      path: "orders",
+      select: "amount note status",
+      populate: {
+        path: "items.itemId",
+        select: "name price",
+      },
+    });
 
     if (!userWithOrders) {
       return res.status(404).json({
@@ -91,17 +93,16 @@ export const getUser = async (req, res) => {
   }
 };
 
-export const getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res) => {
   try {
-    const usersWithOrders = await UsersModel.find({})
-      .populate({
-        path: 'orders',
-        select: 'amount note status',
-        populate: {
-          path: 'items.itemId',
-          select: 'name price',
-        }
-      });
+    const usersWithOrders = await UsersModel.find({}).populate({
+      path: "orders",
+      select: "amount note status",
+      populate: {
+        path: "items.itemId",
+        select: "name price",
+      },
+    });
 
     res.status(200).json(usersWithOrders);
   } catch (error) {
@@ -111,4 +112,11 @@ export const getAllUsers = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+module.exports = {
+  deleteUser,
+  getAllUsers,
+  getUser,
+  updateUserInfo,
 };

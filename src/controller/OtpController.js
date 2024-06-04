@@ -1,17 +1,18 @@
-import jwt from "jsonwebtoken";
-import twilio from "twilio";
-import dotenv from "dotenv";
-import { UsersModel } from "../model/UserModel.js";
+const jwt = require("jsonwebtoken");
+const twilio = require("twilio");
+const dotenv = require("dotenv");
+const { UsersModel } = require("../model/UserModel.js");
+
 dotenv.config();
 
-const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_SERVICE_SID ,JWT_KEY } =
+const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_SERVICE_SID, JWT_KEY } =
   process.env;
 
 const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, {
   lazyLoading: true,
 });
 
-export const sendOtp = async (req, res, next) => {
+const sendOtp = async (req, res, next) => {
   const { phoneNumber, countryCode } = req.body;
   try {
     const otpResponse = await client.verify.v2
@@ -33,7 +34,7 @@ export const sendOtp = async (req, res, next) => {
   }
 };
 
-export const verifyOtp = async (req, res, next) => {
+const verifyOtp = async (req, res, next) => {
   const { phoneNumber, countryCode, otp, fullname, gender, role } = req.body;
   try {
     const verifiedResponse = await client.verify.v2
@@ -85,4 +86,9 @@ export const verifyOtp = async (req, res, next) => {
       error: error.message,
     });
   }
+};
+
+module.exports = {
+  sendOtp,
+  verifyOtp,
 };

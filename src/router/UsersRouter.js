@@ -1,18 +1,20 @@
-import express from "express";
-import {
+const express = require("express");
+const {
   deleteUser,
   getAllUsers,
   getUser,
   updateUserInfo,
-} from "../controller/UsersController.js";
-import { verifyAccess } from "../middleware/AuthMiddleware.js";
+} = require("../controller/UsersController.js");
+const { verifyAccess } = require("../middleware/AuthMiddleware.js");
 
-export const UsersRouter = express.Router();
+const UsersRouter = express.Router();
 
 UsersRouter.put("/users/:countryCode-:phoneNumber", updateUserInfo);
 UsersRouter.delete("/users/:countryCode-:phoneNumber", deleteUser);
 UsersRouter.get("/users/:countryCode-:phoneNumber", getUser);
 UsersRouter.get("/users", getAllUsers);
+
+module.exports = { UsersRouter };
 
 // UsersRouter.put("/users/:countryCode-:phoneNumber", verifyAccess(["Admin", "User"]), updateUserInfo);
 // UsersRouter.delete("/users/:countryCode-:phoneNumber", verifyAccess(["Admin"]), deleteUser);

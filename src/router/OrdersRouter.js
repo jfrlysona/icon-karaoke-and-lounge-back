@@ -1,18 +1,20 @@
-import express from "express";
-import {
+const express = require("express");
+const {
   createOrder,
   deleteOrder,
   getAllOrders,
   getOrderById,
-} from "../controller/OrdersController.js";
-import { verifyAccess } from "../middleware/AuthMiddleware.js";
+} = require("../controller/OrdersController.js");
+const { verifyAccess } = require("../middleware/AuthMiddleware.js");
 
-export const OrdersRouter = express.Router();
+const OrdersRouter = express.Router();
 
 OrdersRouter.get("/orders", getAllOrders);
 OrdersRouter.get("/orders/:id", getOrderById);
 OrdersRouter.post("/orders", createOrder);
 OrdersRouter.delete("/orders/:id", deleteOrder);
+
+module.exports = { OrdersRouter };
 
 // OrdersRouter.get("/orders", verifyAccess(["Admin"]), getAllOrders);
 // OrdersRouter.get("/orders/:id", verifyAccess(["Admin"]), getOrderById);

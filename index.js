@@ -1,40 +1,36 @@
-import cors from "cors";
-import "dotenv/config";
-import express from "express";
-import mongoose from "mongoose";
-import { CategoriesRouter } from "./src/router/CategoriesRouter.js";
-import { ItemsRouter } from "./src/router/ItemsRouter.js";
-import UploadRouter from "./src/router/UploadRouter.js";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import path from "path";
-import { OtpRouter } from "./src/router/OtpRouter.js";
-import { UsersRouter } from "./src/router/UsersRouter.js";
-import { OrdersRouter } from "./src/router/OrdersRouter.js";
+require("dotenv").config();
+const cors = require("cors");
+const express = require("express");
+const mongoose = require("mongoose");
+const { CategoriesRouter } = require("./src/router/CategoriesRouter.js");
+const { ItemsRouter } = require("./src/router/ItemsRouter.js");
+const UploadRouter = require("./src/router/UploadRouter.js");
+const { OtpRouter } = require("./src/router/OtpRouter.js");
+const { UsersRouter } = require("./src/router/UsersRouter.js");
+const { OrdersRouter } = require("./src/router/OrdersRouter.js");
+const path = require("path");
 
 const app = express();
 const port = process.env.PORT;
 const key = process.env.KEY;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 app.use(express.json());
 app.use(cors());
 
-app.use("/api/images", express.static(path.join(__dirname, "public")));
+const publicPath = path.join(__dirname, "public");
+app.use("/api/images", express.static(publicPath));
 
-app.use("/api", CategoriesRouter);
-app.use("/api", ItemsRouter);
-app.use("/api", UploadRouter);
-app.use("/api", OtpRouter);
-app.use("/api", UsersRouter);
-app.use("/api", OrdersRouter);
+app.use("/api/categories", CategoriesRouter);
+app.use("/api/items", ItemsRouter);
+app.use("/api/upload", UploadRouter);
+app.use("/api/otp", OtpRouter);
+app.use("/api/users", UsersRouter);
+app.use("/api/orders", OrdersRouter);
 
 mongoose
   .connect(key)
   .then(() => console.log("Connected to the menu database!"))
-  .catch((error) => console.log("Not Connected! Error:", error));
+  .catch((error) => console.error("Not Connected! Error:", error));
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

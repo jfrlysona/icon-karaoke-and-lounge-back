@@ -1,4 +1,5 @@
-import mongoose, { Schema } from "mongoose";
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const usersSchema = new Schema({
   fullname: { type: String, required: true },
@@ -9,4 +10,5 @@ const usersSchema = new Schema({
   orders: [{ type: Schema.Types.ObjectId, ref: "orders" }],
 });
 
-export const UsersModel = mongoose.model("users", usersSchema);
+const UsersModel = mongoose.model("users", usersSchema);
+module.exports = UsersModel;

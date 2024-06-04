@@ -1,5 +1,5 @@
-import express from "express";
-import { upload } from "../middleware/UploadMiddleware.js";
+const express = require("express");
+const { upload } = require("../middleware/UploadMiddleware.js");
 
 const UploadRouter = express.Router();
 
@@ -16,4 +16,4 @@ UploadRouter.post("/upload", upload.single("image"), (req, res) => {
   }
 });
 
-export default UploadRouter;
+module.exports = UploadRouter;

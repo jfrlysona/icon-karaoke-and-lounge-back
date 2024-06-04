@@ -1,4 +1,5 @@
-import mongoose, { Schema } from "mongoose";
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const ordersSchema = new Schema({
   amount: { type: Number, required: true },
@@ -14,4 +15,5 @@ const ordersSchema = new Schema({
   orderByUserId: { type: Schema.Types.ObjectId, ref: "users" },
 });
 
-export const OrdersModel = mongoose.model("orders", ordersSchema);
+const OrdersModel = mongoose.model("orders", ordersSchema);
+module.exports = OrdersModel;

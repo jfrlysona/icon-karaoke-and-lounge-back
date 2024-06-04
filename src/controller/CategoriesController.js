@@ -1,6 +1,6 @@
-import { CategoriesModel } from "../model/CategoriesModel.js";
+const { CategoriesModel } = require("../model/CategoriesModel.js");
 
-export const getAllCategories = async (req, res) => {
+const getAllCategories = async (req, res) => {
   try {
     const AllCategories = await CategoriesModel.find({});
     res.status(200).json(AllCategories);
@@ -9,7 +9,7 @@ export const getAllCategories = async (req, res) => {
   }
 };
 
-export const getCategoryById = async (req, res) => {
+const getCategoryById = async (req, res) => {
   try {
     const { id } = req.params;
     const category = await CategoriesModel.findById(id);
@@ -23,7 +23,7 @@ export const getCategoryById = async (req, res) => {
   }
 };
 
-export const createCategories = async (req, res, next) => {
+const createCategories = async (req, res, next) => {
   try {
     const { name, items } = req.body;
     const newCategories = CategoriesModel({
@@ -38,7 +38,7 @@ export const createCategories = async (req, res, next) => {
   }
 };
 
-export const updateCategory = async (req, res) => {
+const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, items } = req.body;
@@ -52,7 +52,7 @@ export const updateCategory = async (req, res) => {
   }
 };
 
-export const deleteCategory = async (req, res) => {
+const deleteCategory = async (req, res) => {
   const { id } = req.params;
   try {
     const category = await CategoriesModel.findByIdAndDelete(id);
@@ -62,7 +62,7 @@ export const deleteCategory = async (req, res) => {
   }
 };
 
-export const getCategoriesWithItems = async (req, res) => {
+const getCategoriesWithItems = async (req, res) => {
   try {
     const categoriesWithItems = await CategoriesModel.find().populate({
       path: "items",
@@ -73,4 +73,12 @@ export const getCategoriesWithItems = async (req, res) => {
     console.error("Error fetching categories with items:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
+module.exports = {
+  getAllCategories,
+  getCategoryById,
+  createCategories,
+  updateCategory,
+  deleteCategory,
+  getCategoriesWithItems,
 };

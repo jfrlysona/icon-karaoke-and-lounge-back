@@ -1,7 +1,9 @@
-import express from "express";
-import { sendOtp, verifyOtp } from "../controller/OtpController.js";
+const express = require("express");
+const { sendOtp, verifyOtp } = require("../controller/OtpController.js");
 
-export const OtpRouter = express.Router();
+const OtpRouter = express.Router();
 
 OtpRouter.post("/otp/send", sendOtp);
 OtpRouter.post("/otp/verify", verifyOtp);
+
+module.exports = { OtpRouter };
