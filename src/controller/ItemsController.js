@@ -1,5 +1,5 @@
-const { ItemsModel } = require("../model/ItemsModel.js");
-const { CategoriesModel } = require("../model/CategoriesModel.js");
+const ItemsModel = require("../model/ItemsModel.js");
+const CategoriesModel = require("../model/CategoriesModel.js");
 
 const getBaseUrl = () => {
   return process.env.API_BASE_URL || "http://localhost:3000";

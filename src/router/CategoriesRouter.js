@@ -1,13 +1,12 @@
 const express = require("express");
 const {
-  createCategories,
-  deleteCategory,
   getAllCategories,
-  getCategoriesWithItems,
   getCategoryById,
+  createCategories,
   updateCategory,
+  deleteCategory,
+  getCategoriesWithItems,
 } = require("../controller/CategoriesController.js");
-const { verifyAccess } = require("../middleware/AuthMiddleware.js");
 
 const CategoriesRouter = express.Router();
 

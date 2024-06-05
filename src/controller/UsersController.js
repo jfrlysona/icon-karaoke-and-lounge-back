@@ -1,4 +1,4 @@
-const { UsersModel } = require("../model/UserModel.js");
+const UsersModel = require("../model/UserModel.js");
 
 const updateUserInfo = async (req, res) => {
   const { fullname, gender, role } = req.body;

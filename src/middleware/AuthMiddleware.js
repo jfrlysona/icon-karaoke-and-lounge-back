@@ -1,13 +1,13 @@
 const jwt = require("jsonwebtoken");
 
-const verifyAccess = function (roles) {
-  return function (req, res, next) {
+const verifyAccess = (roles) => {
+  return (req, res, next) => {
     try {
       let token = req.headers.authorization;
       if (!token) {
         return res.status(403).send("Token is required");
       }
-      if (!token.startsWith("Bearer")) {
+      if (!token.startsWith("Bearer ")) {
         return res.status(403).send("Token is not valid");
       }
       token = token.slice(7);
@@ -19,8 +19,15 @@ const verifyAccess = function (roles) {
       console.log(decoded);
       next();
     } catch (error) {
-      res.send(error.message);
+      if (error.name === "TokenExpiredError") {
+        return res.status(401).send("Token expired");
+      } else if (error.name === "JsonWebTokenError") {
+        return res.status(401).send("Invalid token");
+      } else {
+        return res.status(500).send("Internal server error");
+      }
     }
   };
 };
+
 module.exports = verifyAccess;

@@ -2,13 +2,14 @@ require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
+const path = require("path");
+
 const { CategoriesRouter } = require("./src/router/CategoriesRouter.js");
 const { ItemsRouter } = require("./src/router/ItemsRouter.js");
 const UploadRouter = require("./src/router/UploadRouter.js");
 const { OtpRouter } = require("./src/router/OtpRouter.js");
 const { UsersRouter } = require("./src/router/UsersRouter.js");
 const { OrdersRouter } = require("./src/router/OrdersRouter.js");
-const path = require("path");
 
 const app = express();
 const port = process.env.PORT;

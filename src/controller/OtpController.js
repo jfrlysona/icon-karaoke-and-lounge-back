@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const twilio = require("twilio");
 const dotenv = require("dotenv");
-const { UsersModel } = require("../model/UserModel.js");
+const UsersModel = require("../model/UserModel.js");
 
 dotenv.config();
 

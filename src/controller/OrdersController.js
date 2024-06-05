@@ -1,6 +1,6 @@
-const { ItemsModel } = require("../model/ItemsModel.js");
-const { OrdersModel } = require("../model/OrderModel.js");
-const { UsersModel } = require("../model/UserModel.js");
+const ItemsModel = require("../model/ItemsModel.js");
+const OrdersModel = require("../model/OrderModel.js");
+const UsersModel = require("../model/UserModel.js");
 
 const getAllOrders = async (req, res) => {
   try {
