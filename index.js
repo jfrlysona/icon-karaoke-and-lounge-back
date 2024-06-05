@@ -20,12 +20,12 @@ app.use(cors());
 const publicPath = path.join(__dirname, "public");
 app.use("/api/images", express.static(publicPath));
 
-app.use("/api/categories", CategoriesRouter);
-app.use("/api/items", ItemsRouter);
-app.use("/api/upload", UploadRouter);
-app.use("/api/otp", OtpRouter);
-app.use("/api/users", UsersRouter);
-app.use("/api/orders", OrdersRouter);
+app.use("/api", CategoriesRouter);
+app.use("/api", ItemsRouter);
+app.use("/api", UploadRouter);
+app.use("/api", OtpRouter);
+app.use("/api", UsersRouter);
+app.use("/api", OrdersRouter);
 
 mongoose
   .connect(key)
