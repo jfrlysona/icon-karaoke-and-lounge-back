@@ -9,9 +9,9 @@ const { verifyAccess } = require("../middleware/AuthMiddleware.js");
 
 const UsersRouter = express.Router();
 
-UsersRouter.put("/users/:countryCode-:phoneNumber", updateUserInfo);
-UsersRouter.delete("/users/:countryCode-:phoneNumber", deleteUser);
-UsersRouter.get("/users/:countryCode-:phoneNumber", getUser);
+UsersRouter.put("/users/:email", updateUserInfo);
+UsersRouter.delete("/users/:email", deleteUser);
+UsersRouter.get("/users/:email", getUser);
 UsersRouter.get("/users", getAllUsers);
 
 module.exports = { UsersRouter };

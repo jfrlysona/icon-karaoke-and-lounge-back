@@ -4,10 +4,20 @@ const UsersModel = require("../model/UserModel.js");
 
 const getAllOrders = async (req, res) => {
   try {
+    // const orders = await OrdersModel.find()
+    //   .populate({
+    //     path: "orderByUserId",
+    //     select: "fullname role gender phoneNumber countryCode",
+    //   })
+    //   .populate({
+    //     path: "items.itemId",
+    //     select: "name price",
+    //   });
+
     const orders = await OrdersModel.find()
       .populate({
         path: "orderByUserId",
-        select: "fullname role gender phoneNumber countryCode",
+        select: "fullname role gender email",
       })
       .populate({
         path: "items.itemId",
@@ -22,10 +32,20 @@ const getAllOrders = async (req, res) => {
 const getOrderById = async (req, res) => {
   const { id } = req.params;
   try {
+    // const order = await OrdersModel.findById(id)
+    //   .populate({
+    //     path: "orderByUserId",
+    //     select: "fullname role gender phoneNumber countryCode",
+    //   })
+    //   .populate({
+    //     path: "items.itemId",
+    //     select: "name price",
+    //   });
+
     const order = await OrdersModel.findById(id)
       .populate({
         path: "orderByUserId",
-        select: "fullname role gender phoneNumber countryCode",
+        select: "fullname role gender email",
       })
       .populate({
         path: "items.itemId",

@@ -2,9 +2,11 @@ const UsersModel = require("../model/UserModel.js");
 
 const updateUserInfo = async (req, res) => {
   const { fullname, gender, role } = req.body;
-  const { phoneNumber, countryCode } = req.params;
+  // const { phoneNumber, countryCode } = req.params;
+  const { email } = req.params;
   try {
-    const user = await UsersModel.findOne({ phoneNumber, countryCode });
+    // const user = await UsersModel.findOne({ phoneNumber, countryCode });
+    const user = await UsersModel.findOne({ email });
 
     if (!user) {
       return res.status(404).json({
@@ -34,13 +36,15 @@ const updateUserInfo = async (req, res) => {
   }
 };
 const deleteUser = async (req, res) => {
-  const { phoneNumber, countryCode } = req.params;
+  // const { phoneNumber, countryCode } = req.params;
+  const { email } = req.params;
 
   try {
-    const user = await UsersModel.findOneAndDelete({
-      phoneNumber,
-      countryCode,
-    });
+    // const user = await UsersModel.findOneAndDelete({
+    //   phoneNumber,
+    //   countryCode,
+    // });
+    const user = await UsersModel.findOneAndDelete({ email });
 
     if (!user) {
       return res.status(404).json({
@@ -62,13 +66,23 @@ const deleteUser = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const { phoneNumber, countryCode } = req.params;
+  // const { phoneNumber, countryCode } = req.params;
+  const { email } = req.params;
 
   try {
-    const userWithOrders = await UsersModel.findOne({
-      phoneNumber,
-      countryCode,
-    }).populate({
+    // const userWithOrders = await UsersModel.findOne({
+    //   phoneNumber,
+    //   countryCode,
+    // }).populate({
+    //   path: "orders",
+    //   select: "amount note status",
+    //   populate: {
+    //     path: "items.itemId",
+    //     select: "name price",
+    //   },
+    // });
+
+    const userWithOrders = await UsersModel.findOne({ email }).populate({
       path: "orders",
       select: "amount note status",
       populate: {
