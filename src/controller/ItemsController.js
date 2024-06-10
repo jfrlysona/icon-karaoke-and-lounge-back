@@ -1,10 +1,6 @@
 const ItemsModel = require("../model/ItemsModel.js");
 const CategoriesModel = require("../model/CategoriesModel.js");
 
-const getBaseUrl = () => {
-  return process.env.API_BASE_URL || "http://localhost:3000";
-};
-
 const getAllItems = async (req, res) => {
   try {
     const AllItems = await ItemsModel.find({});
@@ -31,16 +27,15 @@ const getItemById = async (req, res) => {
 const createItem = async (req, res) => {
   try {
     const { name, price, categoryId, ingredients } = req.body;
-
+    const image = req.file.path;
     const newItemData = {
       name,
       price,
       categoryId,
       ingredients,
     };
-
-    if (req.uploadFileName) {
-      newItemData.image = `${getBaseUrl()}/api/images/${req.uploadFileName}`;
+    if (image) {
+      newItemData.image = image;
     }
 
     const newItem = new ItemsModel(newItemData);
@@ -70,7 +65,7 @@ const updateItem = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, price, categoryId, ingredients } = req.body;
-
+    const image = req.file ? req.file.path : undefined;
     const existingItem = await ItemsModel.findById(id);
     if (!existingItem) {
       return res.status(404).json({ error: "Item not found" });
@@ -83,10 +78,8 @@ const updateItem = async (req, res) => {
       ingredients,
     };
 
-    if (req.uploadFileName) {
-      updatedItemData.image = `${getBaseUrl()}/api/images/${
-        req.uploadFileName
-      }`;
+    if (image) {
+      updatedItemData.image = image;
     }
 
     const updatedItem = await ItemsModel.findByIdAndUpdate(

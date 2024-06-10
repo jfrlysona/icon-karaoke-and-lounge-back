@@ -1,18 +1,14 @@
 const express = require("express");
-const { upload } = require("../middleware/UploadMiddleware.js");
+const { upload } = require("../middleware/UploadMiddleware");
 
 const UploadRouter = express.Router();
 
 UploadRouter.post("/upload", upload.single("image"), (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
-    const imageUrl = `${process.env.API_BASE_URL}/api/images/${req.file.filename}`;
-    res.status(200).json({ message: "File uploaded successfully", imageUrl });
+    const imageUrl = req.file.path; 
+    res.status(201).json({ imageUrl });
   } catch (error) {
-    console.error("Error uploading file:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: error.message });
   }
 });
 

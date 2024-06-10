@@ -18,9 +18,7 @@ const key = process.env.KEY;
 app.use(express.json());
 app.use(cors());
 
-const publicPath = path.join(__dirname, "public");
-app.use("/api/images", express.static(publicPath));
-
+app.use("/api", UploadRouter);
 app.use("/api", CategoriesRouter);
 app.use("/api", ItemsRouter);
 app.use("/api", UploadRouter);
