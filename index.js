@@ -10,6 +10,7 @@ const UploadRouter = require("./src/router/UploadRouter.js");
 const { OtpRouter } = require("./src/router/OtpRouter.js");
 const { UsersRouter } = require("./src/router/UsersRouter.js");
 const { OrdersRouter } = require("./src/router/OrdersRouter.js");
+const CartRouter = require("./src/router/CartRouter.js");
 
 const app = express();
 const port = process.env.PORT;
@@ -25,6 +26,7 @@ app.use("/api", UploadRouter);
 app.use("/api", OtpRouter);
 app.use("/api", UsersRouter);
 app.use("/api", OrdersRouter);
+app.use("/api", CartRouter);
 
 mongoose
   .connect(key)

@@ -7,6 +7,7 @@ const usersSchema = new Schema({
   gender: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   orders: [{ type: Schema.Types.ObjectId, ref: "orders" }],
+  cart: { type: Schema.Types.ObjectId, ref: "cart" },
 });
 
 const UsersModel = mongoose.model("users", usersSchema);

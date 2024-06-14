@@ -82,14 +82,22 @@ const getUser = async (req, res) => {
     //   },
     // });
 
-    const userWithOrders = await UsersModel.findOne({ email }).populate({
-      path: "orders",
-      select: "amount note status",
-      populate: {
-        path: "items.itemId",
-        select: "name price",
-      },
-    });
+    const userWithOrders = await UsersModel.findOne({ email })
+      .populate({
+        path: "orders",
+        select: "amount note status",
+        populate: {
+          path: "items.itemId",
+          select: "name price",
+        },
+      })
+      .populate({
+        path: "cart",
+        populate: {
+          path: "cartItems.item",
+          select: "name price image",
+        },
+      });
 
     if (!userWithOrders) {
       return res.status(404).json({
@@ -109,6 +117,14 @@ const getUser = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
+    // const usersWithOrders = await UsersModel.find({}).populate({
+    //   path: "orders",
+    //   select: "amount note status",
+    //   populate: {
+    //     path: "items.itemId",
+    //     select: "name price",
+    //   },
+    // });
     const usersWithOrders = await UsersModel.find({}).populate({
       path: "orders",
       select: "amount note status",
@@ -116,8 +132,13 @@ const getAllUsers = async (req, res) => {
         path: "items.itemId",
         select: "name price",
       },
+    }).populate({
+      path: "cart",
+      populate: {
+        path: "cartItems.item",
+        select: "name price image"
+      }
     });
-
     res.status(200).json(usersWithOrders);
   } catch (error) {
     console.error("Error retrieving all users with orders:", error);
