@@ -4,10 +4,11 @@ const {
   removeItemFromCart,
   getCart,
 } = require("../controller/CartController");
+const verifyAccess = require("../middleware/AuthMiddleware");
 const CartRouter = express.Router();
 
-CartRouter.post("/cart/add", addItemToCart);
-CartRouter.post("/cart/remove", removeItemFromCart);
-CartRouter.get("/cart/:userId", getCart);
+CartRouter.post("/cart/add", verifyAccess(["Admin","User"]), addItemToCart);
+CartRouter.post("/cart/remove", verifyAccess(["Admin","User"]), removeItemFromCart);
+CartRouter.get("/cart/:userId", verifyAccess(["Admin","User"]), getCart);
 
 module.exports = CartRouter;

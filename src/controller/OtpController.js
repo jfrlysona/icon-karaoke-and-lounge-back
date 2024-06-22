@@ -115,6 +115,9 @@ const transporter = nodemailer.createTransport({
     pass: EMAIL_PASS,
   },
 });
+
+const otpStore = {}; // Temporary in-memory storage for OTPs
+
 function generateNumericOtp(length) {
   const otp = crypto.randomInt(
     Math.pow(10, length - 1),
@@ -127,6 +130,8 @@ const sendOtp = async (req, res, next) => {
   const { email } = req.body;
   try {
     const otp = generateNumericOtp(4);
+    otpStore[email] = otp; // Store the OTP temporarily
+
     const mailOptions = {
       from: `"ICON" <${EMAIL_USER}>`,
       to: email,
@@ -155,13 +160,15 @@ const verifyOtp = async (req, res, next) => {
   const { otp, fullname, gender, role } = req.body;
   const { email } = req.params;
   try {
-    const storedOtp = otp;
+    const storedOtp = otpStore[email];
 
     if (otp === storedOtp) {
+      delete otpStore[email]; 
+
       let user = await UsersModel.findOneAndUpdate(
         { email },
-        { fullname, gender, role },
-        { new: true, upsert: true }
+        { $set: { fullname, gender, role } },
+        { new: true, upsert: true, runValidators: true }
       );
 
       if (!user) {
@@ -204,5 +211,6 @@ module.exports = {
   sendOtp,
   verifyOtp,
 };
+
 
 //otp for email using nodemailer end
