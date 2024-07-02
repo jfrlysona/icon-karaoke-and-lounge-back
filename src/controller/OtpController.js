@@ -184,7 +184,7 @@ const verifyOtp = async (req, res, next) => {
         },
         JWT_KEY,
         {
-          expiresIn: "1h",
+          expiresIn: "7d",
         }
       );
 

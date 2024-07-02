@@ -36,7 +36,7 @@ const addItemToCart = async (req, res) => {
 };
 
 const removeItemFromCart = async (req, res) => {
-  const { userId, itemId } = req.body;
+  const { userId, itemId, quantity } = req.body;
 
   try {
     const cart = await CartModel.findOne({ userId });
@@ -44,7 +44,18 @@ const removeItemFromCart = async (req, res) => {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    cart.cartItems = cart.cartItems.filter(cartItem => cartItem.item.toString() !== itemId);
+    const existingItemIndex = cart.cartItems.findIndex(cartItem => cartItem.item.toString() === itemId);
+
+    if (existingItemIndex === -1) {
+      return res.status(404).json({ message: "Item not found in cart" });
+    }
+
+    if (cart.cartItems[existingItemIndex].quantity > quantity) {
+      cart.cartItems[existingItemIndex].quantity -= quantity;
+    } else {
+      cart.cartItems.splice(existingItemIndex, 1);
+    }
+
     await cart.save();
 
     res.status(200).json(cart);

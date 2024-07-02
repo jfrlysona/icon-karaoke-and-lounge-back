@@ -5,6 +5,7 @@ const ordersSchema = new Schema({
   amount: { type: Number, required: true },
   status: { type: String, required: true, default: "pending" },
   cashback: { type: Number, default: 0, ref: "users" },
+  
   note: String,
   items: [
     {
