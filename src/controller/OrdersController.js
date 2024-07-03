@@ -61,7 +61,7 @@ const getOrderById = async (req, res) => {
 };
 
 const createOrder = async (req, res) => {
-  const { amount, items, orderByUserId, note } = req.body;
+  const { amount, items, orderByUserId, promocode, paymentMethod } = req.body;
 
   try {
     const user = await UsersModel.findById(orderByUserId);
@@ -82,7 +82,8 @@ const createOrder = async (req, res) => {
       amount,
       items,
       orderByUserId,
-      note,
+      promocode,
+      paymentMethod,
     });
 
     const savedOrder = await newOrder.save();

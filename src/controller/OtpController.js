@@ -163,7 +163,7 @@ const verifyOtp = async (req, res, next) => {
     const storedOtp = otpStore[email];
 
     if (otp === storedOtp) {
-      delete otpStore[email]; 
+      delete otpStore[email];
 
       let user = await UsersModel.findOneAndUpdate(
         { email },
@@ -181,6 +181,7 @@ const verifyOtp = async (req, res, next) => {
           email: user.email,
           fullname: user.fullname,
           role: user.role,
+          gender: user.gender,
         },
         JWT_KEY,
         {
@@ -211,6 +212,5 @@ module.exports = {
   sendOtp,
   verifyOtp,
 };
-
 
 //otp for email using nodemailer end

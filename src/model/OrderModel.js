@@ -4,9 +4,15 @@ const { Schema } = mongoose;
 const ordersSchema = new Schema({
   amount: { type: Number, required: true },
   status: { type: String, required: true, default: "pending" },
-  cashback: { type: Number, default: 0, ref: "users" },
-  
-  note: String,
+  promocode: [
+    {
+      code: { type: String, required: true },
+      discount: { type: Number, required: true },
+      expirationDate: { type: Date, required: true },
+      limit: { type: Number, default: 0, ref: "users" },
+    },
+  ],
+  paymentMethod: { type: String, required: true },
   items: [
     {
       itemId: { type: Schema.Types.ObjectId, ref: "items" },

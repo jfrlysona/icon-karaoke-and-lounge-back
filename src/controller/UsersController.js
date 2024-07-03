@@ -85,7 +85,7 @@ const getUser = async (req, res) => {
     const userWithOrders = await UsersModel.findOne({ email })
       .populate({
         path: "orders",
-        select: "amount note status",
+        select: "amount promocode status paymentMethod",
         populate: {
           path: "items.itemId",
           select: "name price",
@@ -125,20 +125,22 @@ const getAllUsers = async (req, res) => {
     //     select: "name price",
     //   },
     // });
-    const usersWithOrders = await UsersModel.find({}).populate({
-      path: "orders",
-      select: "amount note status",
-      populate: {
-        path: "items.itemId",
-        select: "name price",
-      },
-    }).populate({
-      path: "cart",
-      populate: {
-        path: "cartItems.item",
-        select: "name price image"
-      }
-    });
+    const usersWithOrders = await UsersModel.find({})
+      .populate({
+        path: "orders",
+        select: "amount promocode status paymentMethod",
+        populate: {
+          path: "items.itemId",
+          select: "name price",
+        },
+      })
+      .populate({
+        path: "cart",
+        populate: {
+          path: "cartItems.item",
+          select: "name price image",
+        },
+      });
     res.status(200).json(usersWithOrders);
   } catch (error) {
     console.error("Error retrieving all users with orders:", error);
