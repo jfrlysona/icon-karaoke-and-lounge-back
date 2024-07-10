@@ -116,7 +116,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const otpStore = {}; // Temporary in-memory storage for OTPs
+const otpStore = {};
 
 function generateNumericOtp(length) {
   const otp = crypto.randomInt(
@@ -130,8 +130,7 @@ const sendOtp = async (req, res, next) => {
   const { email } = req.body;
   try {
     const otp = generateNumericOtp(4);
-    otpStore[email] = otp; // Store the OTP temporarily
-
+    otpStore[email] = otp; 
     const mailOptions = {
       from: `"ICON" <${EMAIL_USER}>`,
       to: email,
